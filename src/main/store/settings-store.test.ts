@@ -160,16 +160,16 @@ describe('notification settings', () => {
     expect(settings.stream.sound.enabled).toBe(false)
   })
 
-  it('starts with the full-screen fallback on and quiet hours off from 22:00 to 07:00', () => {
+  it('starts with Windows notifications in full-screen off and quiet hours off from 22:00 to 07:00', () => {
     const settings = readNotificationSettings(db)
 
-    expect(settings.fullscreenFallback).toBe(true)
+    expect(settings.nativeInFullscreen).toBe(false)
     expect(settings.quietHours).toEqual({ enabled: false, start: 1320, end: 420 })
   })
 
   it('reads settings saved before quiet hours existed with their defaults', () => {
     const legacy: Record<string, unknown> = { ...DEFAULT_NOTIFICATION_SETTINGS, corner: 'top-left' }
-    delete legacy['fullscreenFallback']
+    delete legacy['nativeInFullscreen']
     delete legacy['quietHours']
     db.prepare('INSERT INTO setting (key, value) VALUES (?, ?)').run(
       'notifications.settings',
@@ -178,8 +178,32 @@ describe('notification settings', () => {
 
     const settings = readNotificationSettings(db)
     expect(settings.corner).toBe('top-left')
-    expect(settings.fullscreenFallback).toBe(true)
+    expect(settings.nativeInFullscreen).toBe(false)
     expect(settings.quietHours).toEqual(DEFAULT_NOTIFICATION_SETTINGS.quietHours)
+  })
+
+  it('ignores the retired full-screen fallback key and drops it on the next save', () => {
+    const legacy: Record<string, unknown> = {
+      ...DEFAULT_NOTIFICATION_SETTINGS,
+      corner: 'top-left',
+      fullscreenFallback: true,
+    }
+    delete legacy['nativeInFullscreen']
+    db.prepare('INSERT INTO setting (key, value) VALUES (?, ?)').run(
+      'notifications.settings',
+      JSON.stringify(legacy),
+    )
+
+    expect(readNotificationSettings(db)).toMatchObject({
+      corner: 'top-left',
+      nativeInFullscreen: false,
+    })
+
+    updateNotificationSettings(db, { durationSec: 8 })
+    const row = db
+      .prepare('SELECT value FROM setting WHERE key = ?')
+      .get('notifications.settings') as { value: string }
+    expect(JSON.parse(row.value)).not.toHaveProperty('fullscreenFallback')
   })
 
   it.each([
@@ -198,10 +222,10 @@ describe('notification settings', () => {
     expect(settings.quietHours).toEqual(DEFAULT_NOTIFICATION_SETTINGS.quietHours)
   })
 
-  it('saves the full-screen fallback switch', () => {
-    updateNotificationSettings(db, { fullscreenFallback: false })
+  it('saves the Windows notifications in full-screen switch', () => {
+    updateNotificationSettings(db, { nativeInFullscreen: true })
 
-    expect(readNotificationSettings(db).fullscreenFallback).toBe(false)
+    expect(readNotificationSettings(db).nativeInFullscreen).toBe(true)
   })
 
   it('merges a quiet hours patch without dropping the other times', () => {

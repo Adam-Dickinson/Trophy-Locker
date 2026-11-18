@@ -210,7 +210,7 @@ async function start(): Promise<void> {
   const notifications = new NotificationService({
     display: (toasts) => void overlay.display(toasts),
     delivery: () => {
-      const delivery = chooseDelivery(notificationState.read(), desktopSettings.fullscreenFallback)
+      const delivery = chooseDelivery(notificationState.read(), desktopSettings.nativeInFullscreen)
       if (delivery === 'native') {
         console.info(
           'Toast: an exclusive full-screen game is running, using a Windows notification',
