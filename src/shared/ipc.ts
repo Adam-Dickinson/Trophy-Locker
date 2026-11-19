@@ -160,7 +160,7 @@ export interface NotificationSettings {
     readonly enabled: boolean
     readonly volume: number
   }
-  readonly fullscreenFallback: boolean
+  readonly nativeInFullscreen: boolean
   readonly quietHours: QuietHours
   readonly stream: StreamOverlaySettings
 }
@@ -176,7 +176,7 @@ export interface NotificationSettingsPatch {
     readonly enabled?: boolean
     readonly volume?: number
   }
-  readonly fullscreenFallback?: boolean
+  readonly nativeInFullscreen?: boolean
   readonly quietHours?: Partial<QuietHours>
   readonly stream?: {
     readonly enabled?: boolean
@@ -199,7 +199,7 @@ export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
     boolean
   >,
   sound: { enabled: true, volume: 0.6 },
-  fullscreenFallback: true,
+  nativeInFullscreen: false,
   quietHours: DEFAULT_QUIET_HOURS,
   stream: {
     enabled: false,

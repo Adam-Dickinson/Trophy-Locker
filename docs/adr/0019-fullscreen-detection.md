@@ -1,6 +1,6 @@
 # ADR-0019: Detecting exclusive full-screen with koffi
 
-- **Status:** Accepted
+- **Status:** Accepted; the fallback default is superseded by [ADR-0020](0020-overlay-in-fullscreen.md)
 - **Date:** 2026-10-23
 
 ## Context

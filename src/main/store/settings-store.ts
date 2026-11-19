@@ -32,7 +32,7 @@ const notificationSettingsSchema = z.object({
   minRarity: z.enum(RARITIES),
   enabledPlatforms: z.partialRecord(z.enum(PLATFORMS), z.boolean()),
   sound: z.object({ enabled: z.boolean(), volume: z.number().min(0).max(1) }),
-  fullscreenFallback: z.boolean().optional().catch(undefined),
+  nativeInFullscreen: z.boolean().optional().catch(undefined),
   quietHours: z
     .object({
       enabled: z.boolean(),
@@ -96,8 +96,8 @@ export function readNotificationSettings(db: DatabaseSync): NotificationSettings
         ...DEFAULT_NOTIFICATION_SETTINGS.enabledPlatforms,
         ...parsed.data.enabledPlatforms,
       },
-      fullscreenFallback:
-        parsed.data.fullscreenFallback ?? DEFAULT_NOTIFICATION_SETTINGS.fullscreenFallback,
+      nativeInFullscreen:
+        parsed.data.nativeInFullscreen ?? DEFAULT_NOTIFICATION_SETTINGS.nativeInFullscreen,
       quietHours: parsed.data.quietHours ?? DEFAULT_NOTIFICATION_SETTINGS.quietHours,
       stream: parsed.data.stream ?? DEFAULT_NOTIFICATION_SETTINGS.stream,
     }

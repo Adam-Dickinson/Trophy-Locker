@@ -197,7 +197,7 @@ const notificationSettingsPatchSchema = z.object({
   sound: z
     .object({ enabled: z.boolean().optional(), volume: z.number().min(0).max(1).optional() })
     .optional(),
-  fullscreenFallback: z.boolean().optional(),
+  nativeInFullscreen: z.boolean().optional(),
   quietHours: z
     .object({
       enabled: z.boolean().optional(),

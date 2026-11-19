@@ -968,7 +968,7 @@ describe('notification settings handlers', () => {
     ['a fractional stream port', { stream: { port: 47821.5 } }],
     ['a stream volume out of range', { stream: { sound: { volume: 2 } } }],
     ['a stream switch that is not a boolean', { stream: { enabled: 'yes' } }],
-    ['a full-screen fallback that is not a boolean', { fullscreenFallback: 'on' }],
+    ['a full-screen switch that is not a boolean', { nativeInFullscreen: 'on' }],
     ['a quiet hours start past midnight', { quietHours: { start: 1440 } }],
     ['a negative quiet hours end', { quietHours: { end: -5 } }],
     ['a fractional quiet hours minute', { quietHours: { start: 600.5 } }],
@@ -979,14 +979,14 @@ describe('notification settings handlers', () => {
     expect(fakes.updateNotificationSettings).toHaveBeenCalledWith({})
   })
 
-  it('passes a full-screen fallback and quiet hours patch through', () => {
+  it('passes a full-screen switch and quiet hours patch through', () => {
     call(IPC.updateNotificationSettings, TRUSTED, {
-      fullscreenFallback: false,
+      nativeInFullscreen: true,
       quietHours: { enabled: true, start: 1380, end: 360 },
     })
 
     expect(fakes.updateNotificationSettings).toHaveBeenCalledWith({
-      fullscreenFallback: false,
+      nativeInFullscreen: true,
       quietHours: { enabled: true, start: 1380, end: 360 },
     })
   })
